@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      https://github.com/engine-core/config-db-setting
- * @copyright Copyright (c) 2021 E-Kevin
- * @license   BSD 3-Clause License
+ * @link https://github.com/engine-core/config-db-setting
+ * @copyright Copyright (c) 2021 engine-core
+ * @license BSD 3-Clause License
  */
 
 declare(strict_types=1);
@@ -16,11 +16,11 @@ use yii\web\Application;
 
 class Info extends ConfigInfo
 {
-    
+
     const EXT_RAND_CODE = 'xSbzVD_';
-    
+
     protected $id = 'config-db-setting';
-    
+
     /**
      * @inheritdoc
      */
@@ -30,22 +30,14 @@ class Info extends ConfigInfo
             'container' => [
                 'definitions' => [
                     'SettingProvider' => [
-                        'class'     => 'EngineCore\extension\setting\DbProvider',
+                        'class' => 'EngineCore\extension\setting\DbProvider',
                         'tableName' => '{{%' . parent::EXT_RAND_CODE . 'setting}}',
                     ],
                 ],
             ],
         ];
     }
-    
-    /**
-     * @inheritdoc
-     */
-    public function getMigrationTable(): string
-    {
-        return '{{%' . static::EXT_RAND_CODE . 'migration}}';
-    }
-    
+
     /**
      * @inheritdoc
      */
@@ -53,7 +45,7 @@ class Info extends ConfigInfo
     {
         return ['@EngineCore/extension/setting/migrations'];
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -62,14 +54,14 @@ class Info extends ConfigInfo
         if (false === parent::install()) {
             return false;
         }
-        
+
         return Ec::$service->getMigration()->table($this->getMigrationTable())
-                           ->interactive(false)
-                           ->path($this->getMigrationPath())
-                           ->compact(Yii::$app instanceof Application)
-                           ->up(0);
+            ->interactive(false)
+            ->path($this->getMigrationPath())
+            ->compact(Yii::$app instanceof Application)
+            ->up(0);
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -78,17 +70,17 @@ class Info extends ConfigInfo
         if (false === parent::uninstall()) {
             return false;
         }
-        
+
         $res = Ec::$service->getMigration()->table($this->getMigrationTable())
-                           ->interactive(false)
-                           ->path($this->getMigrationPath())
-                           ->compact(Yii::$app instanceof Application)
-                           ->down('all');
+            ->interactive(false)
+            ->path($this->getMigrationPath())
+            ->compact(Yii::$app instanceof Application)
+            ->down('all');
         if ($res) {
             Ec::$service->getMigration()->getMigrate()->db->createCommand()->dropTable($this->getMigrationTable())->execute();
         }
-        
+
         return $res;
     }
-    
+
 }
